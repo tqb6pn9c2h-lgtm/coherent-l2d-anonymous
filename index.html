@@ -1,0 +1,822 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Coherent hierarchical multi-label learning to defer for medical imaging</title>
+    <meta
+      name="description"
+      content="Project page for coherent hierarchical multi-label learning to defer in medical imaging."
+    >
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <a class="skip-link" href="#content">Skip to content</a>
+
+    <header class="site-header" aria-label="Site header">
+      <nav class="nav" aria-label="Primary navigation">
+        <a class="brand" href="#top" aria-label="Project page home">Coherent L2D</a>
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links">
+          <span class="sr-only">Toggle navigation</span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </button>
+        <div class="nav-links" id="nav-links">
+          <a href="#challenge">Challenge</a>
+          <a href="#bayes">Bayes Rule</a>
+          <a href="#methods">Methods</a>
+          <a href="#results">Results</a>
+          <a href="#takeaways">Takeaways</a>
+          <a href="#citation">Citation</a>
+        </div>
+      </nav>
+    </header>
+
+    <main id="content">
+      <section class="hero" id="top" aria-labelledby="hero-title">
+        <div class="container hero-content">
+          <p class="eyebrow">Learning to defer / medical imaging / human-AI handoff</p>
+          <h1 id="hero-title">Coherent hierarchical multi-label learning to defer for medical imaging</h1>
+          <p class="lead">
+            Hierarchical L2D must specify which findings the model predicts, excludes, and
+            delegates. In medical taxonomies, independent per-label defer decisions can satisfy
+            local losses while yielding an incoherent global action vector.
+          </p>
+
+          <div class="hero-actions" aria-label="Project links">
+            <a class="button primary" href="#results">View results</a>
+            <a class="button secondary" href="#methods">See method</a>
+          </div>
+
+          <div class="hero-contributions" aria-label="Paper contributions">
+            <p class="claim-heading">Paper contributions</p>
+            <dl class="hero-claims">
+              <div>
+                <span class="claim-number">01</span>
+                <dt>Problem formulation</dt>
+                <dd>Hierarchical multi-label L2D as a structured clinical handoff.</dd>
+              </div>
+              <div>
+                <span class="claim-number">02</span>
+                <dt>Deferral incoherence</dt>
+                <dd>Taxonomic, delegation, and deductive failures in the action space.</dd>
+              </div>
+              <div>
+                <span class="claim-number">03</span>
+                <dt>Coherent Bayes rule</dt>
+                <dd>The optimal action is a joint taxonomy decision, not nodewise thresholding.</dd>
+              </div>
+              <div>
+                <span class="claim-number">04</span>
+                <dt>Deployable remedies</dt>
+                <dd>Exact projection plus fast TBP+RPO across four imaging benchmarks.</dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-band proof-strip" aria-label="Result highlights">
+        <div class="container proof-grid">
+          <article>
+            <span class="stat-value">4</span>
+            <span class="stat-label">medical-imaging benchmarks</span>
+          </article>
+          <article>
+            <span class="stat-value">0</span>
+            <span class="stat-label">incoherence with exact projection</span>
+          </article>
+          <article>
+            <span class="stat-value">near 0</span>
+            <span class="stat-label">residual incoherence with TBP+RPO</span>
+          </article>
+          <article>
+            <span class="stat-value">35</span>
+            <span class="stat-label">pooled real-reader runs across VinDr-CXR and CheXpert</span>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-band" id="challenge">
+        <div class="container">
+          <div class="section-heading">
+            <p class="eyebrow">Challenge</p>
+            <h2>Flat deferral is the wrong abstraction for a taxonomy.</h2>
+            <p>
+              Standard hierarchy-aware classification constrains binary labels. Hierarchical
+              L2D must also constrain ternary actions: absent, present, and defer. Otherwise
+              the system can send a clinical reader a delegation that contradicts itself.
+            </p>
+          </div>
+
+          <div class="taxonomy-reveal" aria-label="Animated transition from flat labels to a taxonomy with an incoherent handoff highlighted">
+            <div class="taxonomy-reveal-copy">
+              <p class="animation-label">Flat labels to taxonomy</p>
+              <h3>Independent actions only become problematic once the clinical structure is visible.</h3>
+              <p>
+                The flat view treats each finding as a separate defer-or-predict decision. When
+                the taxonomy edges appear, a deferred parent with a present child becomes a
+                delegation violation.
+              </p>
+            </div>
+
+            <div class="reveal-stage" aria-hidden="true">
+              <svg class="reveal-edges" viewBox="0 0 1000 360" preserveAspectRatio="none">
+                <path
+                  class="edge-base"
+                  d="M500 58 V118 M170 118 H830 M170 118 V166 M500 118 V166 M830 118 V166 M500 166 V228 M280 228 H720 M280 228 V300 M500 228 V300 M720 228 V300"
+                ></path>
+                <path class="edge-conflict" d="M500 166 V300"></path>
+              </svg>
+
+              <div class="stage-caption flat-caption">
+                Flat: independent nodewise decisions
+              </div>
+              <div class="stage-caption taxonomy-caption">
+                Taxonomy: parent-child edges expose the handoff conflict
+              </div>
+              <div class="conflict-callout">
+                Delegation violation
+                <span>child present commits a deferred parent</span>
+              </div>
+
+              <div class="reveal-node reveal-root present-soft-node">
+                Abnormality
+                <span>present</span>
+              </div>
+              <div class="reveal-node reveal-parent defer-node">
+                Lung opacity
+                <span>defer</span>
+              </div>
+              <div class="reveal-node reveal-pleural absent-node">
+                Pleural effusion
+                <span>absent</span>
+              </div>
+              <div class="reveal-node reveal-device absent-node">
+                Support device
+                <span>absent</span>
+              </div>
+              <div class="reveal-node reveal-edema absent-node">
+                Edema
+                <span>absent</span>
+              </div>
+              <div class="reveal-node reveal-consolidation present-node conflict-node">
+                Consolidation
+                <span>present</span>
+              </div>
+              <div class="reveal-node reveal-infiltration defer-node">
+                Infiltration
+                <span>defer</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="failure-grid" aria-label="Deferral incoherence types">
+            <article class="failure-card taxonomic">
+              <span class="failure-tag">Taxonomic</span>
+              <h3>Child present under absent parent</h3>
+              <div class="mini-tree taxonomic-example" aria-hidden="true">
+                <div class="mini-node absent-node">Parent <span>absent</span></div>
+                <div class="mini-edge"></div>
+                <div class="mini-node present-node">Child <span>present</span></div>
+              </div>
+              <p>
+                The model asserts a specific finding while ruling out the broader clinical
+                category that must contain it.
+              </p>
+            </article>
+            <article class="failure-card delegation">
+              <span class="failure-tag">Delegation</span>
+              <h3>Child decides a deferred parent</h3>
+              <div class="mini-tree delegation-example" aria-hidden="true">
+                <div class="mini-node defer-node">Parent <span>defer</span></div>
+                <div class="mini-edge"></div>
+                <div class="mini-node present-node">Child <span>present</span></div>
+              </div>
+              <p>
+                The model asks the expert to decide a parent, then autonomously asserts a child
+                whose presence already commits the parent.
+              </p>
+            </article>
+            <article class="failure-card deductive">
+              <span class="failure-tag">Deductive</span>
+              <h3>Deferred value already entailed</h3>
+              <div class="mini-tree deductive-example" aria-hidden="true">
+                <div class="mini-node absent-node">Parent <span>absent</span></div>
+                <div class="mini-edge"></div>
+                <div class="mini-node defer-node">Child <span>defer</span></div>
+              </div>
+              <p>
+                The model defers a node whose value follows from its own ancestor decisions,
+                creating unnecessary and confusing reader work.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-band muted" id="bayes">
+        <div class="container bayes-layout">
+          <div class="bayes-copy">
+            <p class="eyebrow">Bayes-optimal deferral</p>
+            <h2>The optimal defer decision is no longer nodewise.</h2>
+            <p>
+              Flat L2D compares the model and expert separately at each label. In a taxonomy,
+              those local winners can be mutually incompatible. The paper's Bayes action instead
+              minimizes total risk over the coherent action set.
+            </p>
+            <div class="bayes-formula" aria-label="Bayes optimal coherent deferral equation">
+              <span>Coherent Bayes action</span>
+              <math class="equation" display="block">
+                <semantics>
+                  <mrow>
+                    <msubsup>
+                      <mi>a</mi>
+                      <mtext>SE</mtext>
+                      <mi>B</mi>
+                    </msubsup>
+                    <mo>(</mo>
+                    <mi>x</mi>
+                    <mo>)</mo>
+                    <mo>&isin;</mo>
+                    <munder>
+                      <mo>argmin</mo>
+                      <mrow>
+                        <mi>a</mi>
+                        <mo>&isin;</mo>
+                        <msub>
+                          <mi mathvariant="script">C</mi>
+                          <mtext>SE</mtext>
+                        </msub>
+                      </mrow>
+                    </munder>
+                    <msub>
+                      <mo>&sum;</mo>
+                      <mrow>
+                        <mi>v</mi>
+                        <mo>&isin;</mo>
+                        <mi mathvariant="script">V</mi>
+                      </mrow>
+                    </msub>
+                    <msub>
+                      <mi>&rho;</mi>
+                      <mi>v</mi>
+                    </msub>
+                    <mo>(</mo>
+                    <msub>
+                      <mi>a</mi>
+                      <mi>v</mi>
+                    </msub>
+                    <mo>|</mo>
+                    <mi>x</mi>
+                    <mo>)</mo>
+                  </mrow>
+                  <annotation encoding="application/x-tex">a_{\mathrm{SE}}^B(x) \in \arg\min_{a \in \mathcal{C}_{\mathrm{SE}}} \sum_{v \in \mathcal{V}} \rho_v(a_v \mid x)</annotation>
+                </semantics>
+              </math>
+              <div class="math-plain">
+                <p><strong>In words:</strong> choose the lowest-risk handoff that is allowed by the taxonomy.</p>
+                <ul>
+                  <li><strong>a</strong> is the whole action vector, not one label at a time.</li>
+                  <li><strong>C_SE</strong> is the set of coherent Selective-Exclusion handoffs.</li>
+                  <li><strong>&rho;<sub>v</sub></strong> is the local risk of choosing absent, present, or defer at node v.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="bayes-visual" aria-label="Illustration of nodewise Bayes versus coherent Bayes">
+            <div class="bayes-panel local-bayes">
+              <div class="bayes-panel-header">
+                <span class="panel-step">Flat Bayes</span>
+                <h3>Minimize each node separately</h3>
+              </div>
+
+              <div class="risk-stack">
+                <article class="risk-card">
+                  <div class="risk-card-title">
+                    <strong>Lung opacity</strong>
+                    <span>local winner: defer</span>
+                  </div>
+                  <div class="risk-row">
+                    <span>present</span>
+                    <b style="--risk-width: 52%">.52</b>
+                  </div>
+                  <div class="risk-row winner defer">
+                    <span>defer</span>
+                    <b style="--risk-width: 18%">.18</b>
+                  </div>
+                </article>
+
+                <article class="risk-card">
+                  <div class="risk-card-title">
+                    <strong>Consolidation</strong>
+                    <span>local winner: present</span>
+                  </div>
+                  <div class="risk-row winner present">
+                    <span>present</span>
+                    <b style="--risk-width: 14%">.14</b>
+                  </div>
+                  <div class="risk-row">
+                    <span>defer</span>
+                    <b style="--risk-width: 34%">.34</b>
+                  </div>
+                </article>
+              </div>
+
+              <div class="bayes-output invalid">
+                <strong>Nodewise output</strong>
+                <span>Lung opacity = defer, Consolidation = present</span>
+              </div>
+            </div>
+
+            <div class="bayes-panel coherent-bayes">
+              <div class="bayes-panel-header">
+                <span class="panel-step">Coherent Bayes</span>
+                <h3>Choose the best feasible joint handoff</h3>
+              </div>
+
+              <div class="bayes-tree-comparison" aria-hidden="true">
+                <div class="bayes-mini-taxonomy invalid">
+                  <p>Local winners placed on the taxonomy</p>
+                  <div class="bayes-tree-node parent defer-node">Lung opacity <span>defer</span></div>
+                  <div class="bayes-tree-children">
+                    <div class="bayes-tree-node absent-node">Edema <span>absent</span></div>
+                    <div class="bayes-tree-node present-node">Consolidation <span>present</span></div>
+                  </div>
+                  <strong>Delegation violation</strong>
+                </div>
+
+                <div class="bayes-mini-taxonomy selected">
+                  <p>Best coherent handoff</p>
+                  <div class="bayes-tree-node parent defer-node">Lung opacity <span>defer</span></div>
+                  <div class="bayes-tree-children">
+                    <div class="bayes-tree-node absent-node">Edema <span>absent</span></div>
+                    <div class="bayes-tree-node defer-node">Consolidation <span>defer</span></div>
+                  </div>
+                  <strong>Lowest-risk feasible action</strong>
+                </div>
+              </div>
+
+              <div class="candidate-list">
+                <article class="candidate rejected">
+                  <span class="candidate-status">Forbidden</span>
+                  <strong>defer parent + present child</strong>
+                  <p>Lowest local combination, but not in C_SE.</p>
+                </article>
+                <article class="candidate selected">
+                  <span class="candidate-status">Selected</span>
+                  <strong>defer parent + defer child</strong>
+                  <p>Best coherent action after enforcing the handoff contract.</p>
+                </article>
+                <article class="candidate">
+                  <span class="candidate-status">Feasible</span>
+                  <strong>present parent + present child</strong>
+                  <p>Coherent, but higher total risk in this example.</p>
+                </article>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-band" id="methods">
+        <div class="container">
+          <div class="section-heading">
+            <p class="eyebrow">Methods</p>
+            <h2>Two contract-aware estimators.</h2>
+            <p>
+              We use exact coherent projection for trained BR-L2D models and TBP+RPO for
+              learned structured inference.
+            </p>
+          </div>
+
+          <div class="method-grid">
+            <article class="method-card">
+              <div class="method-header">
+                <span class="method-kicker">Exact retrofit</span>
+                <span class="method-badge">zero incoherence</span>
+              </div>
+              <h3>BR + Projection</h3>
+              <p>
+                Train a standard binary-relevance L2D model, then decode the closest coherent
+                action vector by dynamic programming over the taxonomy.
+              </p>
+              <ul class="check-list">
+                <li>Inference-only repair for existing local L2D models</li>
+                <li>Exact MAP over the Selective-Exclusion coherent action set</li>
+                <li>Use when deterministic contract compliance is required</li>
+              </ul>
+            </article>
+
+            <article class="method-card emphasis">
+              <div class="method-header">
+                <span class="method-kicker">Fast learned policy</span>
+                <span class="method-badge">high throughput</span>
+              </div>
+              <h3>TBP + RPO</h3>
+              <p>
+                Taxonomic Belief Propagation builds structural zeros into parent-child action
+                transitions. Recursive Policy Optimisation fine-tunes through the same hierarchy
+                recursion used at inference.
+              </p>
+              <ul class="check-list">
+                <li>TBP joint model has coherent support under SE</li>
+                <li>Ancestor decisions learn downstream costs during Stage II training</li>
+                <li>Fast marginal decoder for repeated inference</li>
+              </ul>
+            </article>
+          </div>
+
+          <div class="tbp-showcase" aria-labelledby="tbp-showcase-title">
+            <div class="tbp-showcase-copy">
+              <p class="showcase-kicker">Inside TBP + RPO</p>
+              <h3 id="tbp-showcase-title">TBP encodes the SE contract in the transition kernel.</h3>
+              <p>
+                TBP maps local absent, present, and defer primitives through parent-conditioned
+                transitions. Entries corresponding to forbidden parent-child actions are zero.
+                RPO fine-tunes through the TBP recursion, so descendant losses can update
+                ancestor primitives.
+              </p>
+              <div class="tbp-principles" aria-label="TBP methodology summary">
+                <div>
+                  <span>01</span>
+                  <strong>Local primitives</strong>
+                  <p>Every node proposes a ternary action distribution.</p>
+                </div>
+                <div>
+                  <span>02</span>
+                  <strong>Taxonomic gate</strong>
+                  <p>Parent actions mask and renormalize child actions.</p>
+                </div>
+                <div>
+                  <span>03</span>
+                  <strong>Recursive training</strong>
+                  <p>Descendant losses update the ancestor choices that constrain them.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="tbp-visual" aria-label="Taxonomic Belief Propagation visual explanation">
+              <div class="primitive-panel">
+                <span class="visual-label">Local primitive eta_v</span>
+                <div class="prob-row absent">
+                  <span>absent</span>
+                  <b style="--prob-width: 31%">.31</b>
+                </div>
+                <div class="prob-row present">
+                  <span>present</span>
+                  <b style="--prob-width: 46%">.46</b>
+                </div>
+                <div class="prob-row defer">
+                  <span>defer</span>
+                  <b style="--prob-width: 23%">.23</b>
+                </div>
+              </div>
+
+              <div class="tbp-flow" aria-hidden="true">
+                <span></span>
+              </div>
+
+              <div class="kernel-panel">
+                <span class="visual-label">SE transition kernel</span>
+                <div class="kernel-grid" role="img" aria-label="Parent action by child action transition matrix with structural zeros">
+                  <span></span>
+                  <span>child absent</span>
+                  <span>child present</span>
+                  <span>child defer</span>
+                  <span>parent absent</span>
+                  <b class="allowed">1</b>
+                  <b class="zero">0</b>
+                  <b class="zero">0</b>
+                  <span>parent present</span>
+                  <b class="renorm">eta_0</b>
+                  <b class="renorm present-mass">eta_1</b>
+                  <b class="renorm">eta_d</b>
+                  <span>parent defer</span>
+                  <b class="renorm">alpha</b>
+                  <b class="zero emph-zero">0</b>
+                  <b class="renorm">1-alpha</b>
+                </div>
+                <p class="kernel-note">
+                  A deferred parent cannot pass probability mass to a positive child assertion.
+                </p>
+              </div>
+
+              <div class="tbp-taxonomy">
+                <span class="visual-label">Composed handoff</span>
+                <div class="tbp-tree-root defer-node">
+                  Lung opacity
+                  <span>defer</span>
+                </div>
+                <div class="tbp-tree-children">
+                  <div class="tbp-tree-node absent-node">
+                    Edema
+                    <span>allowed absent</span>
+                  </div>
+                  <div class="tbp-tree-node blocked-node">
+                    Consolidation
+                    <span>present zeroed</span>
+                  </div>
+                  <div class="tbp-tree-node defer-node">
+                    Consolidation
+                    <span>defer remains</span>
+                  </div>
+                </div>
+                <p>TBP assigns zero support to incoherent action vectors by construction.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-band results-band" id="results">
+        <div class="container">
+          <div class="section-heading">
+            <p class="eyebrow">Results</p>
+            <h2>Independent L2D is systematically incoherent. Structured methods fix the handoff.</h2>
+            <p>
+              Across real-reader CXR evidence and controlled-expert stress tests, the dominant
+              failures are not ordinary hierarchy violations. They are delegation and deductive
+              handoff errors.
+            </p>
+          </div>
+
+          <div class="result-summary">
+            <article>
+              <span class="summary-label">VinDr-CXR</span>
+              <strong>.107 -> .004</strong>
+              <span>Any incoherence: BR-L2D to BR+RPO</span>
+            </article>
+            <article>
+              <span class="summary-label">CheXpert</span>
+              <strong>.050 -> ~0</strong>
+              <span>Any incoherence with utility gains</span>
+            </article>
+            <article>
+              <span class="summary-label">PadChest</span>
+              <strong>.124 -> ~0</strong>
+              <span>Largest taxonomy stress test</span>
+            </article>
+            <article>
+              <span class="summary-label">Projection</span>
+              <strong>=0</strong>
+              <span>Exact incoherence on every benchmark</span>
+            </article>
+          </div>
+
+          <p class="table-caption" id="results-table-caption">
+            Budget-swept primary results. Higher is better for BalAcc, F1-I, and F1-L;
+            lower is better for Any incoh.
+          </p>
+          <div
+            class="table-wrap"
+            role="region"
+            aria-label="Primary results table"
+            aria-describedby="results-table-caption"
+            tabindex="0"
+          >
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Dataset</th>
+                  <th scope="col">Method</th>
+                  <th scope="col">BalAcc</th>
+                  <th scope="col">F1-I</th>
+                  <th scope="col">F1-L</th>
+                  <th scope="col">Any incoh.</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row" rowspan="4">VinDr-CXR</th>
+                  <td>BR-L2D</td>
+                  <td>.852</td>
+                  <td>.512</td>
+                  <td>.749</td>
+                  <td>.107</td>
+                </tr>
+                <tr>
+                  <td>BR (cont.)</td>
+                  <td>.847</td>
+                  <td>.514</td>
+                  <td>.763</td>
+                  <td>.138</td>
+                </tr>
+                <tr class="proposed">
+                  <td>BR+Projection</td>
+                  <td>.853</td>
+                  <td>.513</td>
+                  <td>.749</td>
+                  <td>=0</td>
+                </tr>
+                <tr class="proposed strong">
+                  <td>BR+RPO</td>
+                  <td>.853</td>
+                  <td>.515</td>
+                  <td>.768</td>
+                  <td>.004</td>
+                </tr>
+
+                <tr>
+                  <th scope="row" rowspan="4">CheXpert</th>
+                  <td>BR-L2D</td>
+                  <td>.811</td>
+                  <td>.641</td>
+                  <td>.734</td>
+                  <td>.050</td>
+                </tr>
+                <tr>
+                  <td>BR (cont.)</td>
+                  <td>.823</td>
+                  <td>.648</td>
+                  <td>.749</td>
+                  <td>.050</td>
+                </tr>
+                <tr class="proposed">
+                  <td>BR+Projection</td>
+                  <td>.812</td>
+                  <td>.642</td>
+                  <td>.735</td>
+                  <td>=0</td>
+                </tr>
+                <tr class="proposed strong">
+                  <td>BR+RPO</td>
+                  <td>.841</td>
+                  <td>.652</td>
+                  <td>.764</td>
+                  <td>~0</td>
+                </tr>
+
+                <tr>
+                  <th scope="row" rowspan="4">PadChest</th>
+                  <td>BR-L2D</td>
+                  <td>.679</td>
+                  <td>.230</td>
+                  <td>.421</td>
+                  <td>.124</td>
+                </tr>
+                <tr>
+                  <td>BR (cont.)</td>
+                  <td>.671</td>
+                  <td>.218</td>
+                  <td>.410</td>
+                  <td>.131</td>
+                </tr>
+                <tr class="proposed">
+                  <td>BR+Projection</td>
+                  <td>.692</td>
+                  <td>.240</td>
+                  <td>.430</td>
+                  <td>=0</td>
+                </tr>
+                <tr class="proposed strong">
+                  <td>BR+RPO</td>
+                  <td>.721</td>
+                  <td>.272</td>
+                  <td>.437</td>
+                  <td>~0</td>
+                </tr>
+
+                <tr>
+                  <th scope="row" rowspan="4">ADPv2</th>
+                  <td>BR-L2D</td>
+                  <td>.896</td>
+                  <td>.863</td>
+                  <td>.878</td>
+                  <td>.068</td>
+                </tr>
+                <tr>
+                  <td>BR (cont.)</td>
+                  <td>.900</td>
+                  <td>.868</td>
+                  <td>.882</td>
+                  <td>.062</td>
+                </tr>
+                <tr class="proposed">
+                  <td>BR+Projection</td>
+                  <td>.895</td>
+                  <td>.861</td>
+                  <td>.876</td>
+                  <td>=0</td>
+                </tr>
+                <tr class="proposed strong">
+                  <td>BR+RPO</td>
+                  <td>.900</td>
+                  <td>.868</td>
+                  <td>.882</td>
+                  <td>.009</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="figure-grid">
+            <figure>
+              <img
+                src="sys.png"
+                alt="Representative VinDr-CXR deferral curve showing system F1 improving with deferral and BR-RPO remaining strongest through much of the sweep."
+              >
+              <figcaption>
+                System F1 across node-level deferral budgets on a representative VinDr-CXR
+                radiologist setting.
+              </figcaption>
+            </figure>
+
+            <figure>
+              <img
+                src="incoh.png"
+                alt="Representative VinDr-CXR incoherence curve showing BR and BR-Continue rise at intermediate deferral budgets while projection remains at zero and BR-RPO stays near zero."
+              >
+              <figcaption>
+                Any incoherence over the same budget sweep. Projection stays at zero; BR+RPO
+                remains near zero.
+              </figcaption>
+            </figure>
+
+            <figure class="wide-figure">
+              <img
+                src="chexpert_multi_expert_combo_au_sys_f1_label_summary_and_curves.png"
+                alt="CheXpert multiple-expert results showing human plus AI expert combinations and deferral curve comparisons."
+              >
+              <figcaption>
+                Multi-expert CheXpert evidence: action-space coherence remains relevant when
+                deferral can route to several experts.
+              </figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-band muted" id="takeaways">
+        <div class="container">
+          <div class="section-heading">
+            <p class="eyebrow">Takeaways</p>
+            <h2>What the paper establishes.</h2>
+          </div>
+
+          <div class="takeaway-grid">
+            <article>
+              <span class="takeaway-number">01</span>
+              <h3>The failure is semantic.</h3>
+              <p>
+                A handoff can be label-satisfiable and still clinically confusing because the
+                model has delegated a decision it already resolved elsewhere in the taxonomy.
+              </p>
+            </article>
+            <article>
+              <span class="takeaway-number">02</span>
+              <h3>The theory changes the Bayes rule.</h3>
+              <p>
+                Coherent deferral is a structured optimisation over the taxonomy; independent
+                nodewise Bayes L2D can still produce delegation violations and deductive defects.
+              </p>
+            </article>
+            <article>
+              <span class="takeaway-number">03</span>
+              <h3>The deployment variants are explicit.</h3>
+              <p>
+                Projection is deterministic and exactly coherent at inference. TBP+RPO is the
+                fast marginal policy evaluated in the main experiments.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-band compact" id="citation">
+        <div class="container citation-grid">
+          <div>
+            <p class="eyebrow">Citation</p>
+            <h2>Anonymous citation</h2>
+            <p>
+              Citation details are anonymized for double-blind review.
+            </p>
+          </div>
+          <div class="citation-box">
+            <pre id="bibtex" tabindex="0">@misc{anonymous2026coherent,
+  title = {Coherent Hierarchical Multi-Label Learning to Defer for Medical Imaging},
+  author = {Anonymous Authors},
+  year = {2026},
+  note = {Anonymous submission}
+}</pre>
+            <button class="copy-button" type="button" data-copy-target="bibtex">
+              Copy BibTeX
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p>
+          Anonymous project page.
+        </p>
+      </div>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
