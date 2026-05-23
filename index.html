@@ -27,7 +27,7 @@
           <a href="#bayes">Bayes Rule</a>
           <a href="#methods">Methods</a>
           <a href="#results">Results</a>
-          <a href="#takeaways">Takeaways</a>
+          <a href="#takeaways">Summary</a>
           <a href="#citation">Citation</a>
         </div>
       </nav>
@@ -37,48 +37,51 @@
       <section class="hero" id="top" aria-labelledby="hero-title">
         <div class="container hero-content">
           <p class="eyebrow">Learning to defer / medical imaging / human-AI handoff</p>
-          <h1 id="hero-title">Coherent hierarchical multi-label learning to defer for medical imaging</h1>
+          <h1 id="hero-title">
+            Coherent <span class="title-accent">hierarchical multi&#8209;label learning to defer</span>
+            for medical imaging
+          </h1>
           <p class="lead">
-            Hierarchical L2D must specify which findings the model predicts, excludes, and
-            delegates. In medical taxonomies, independent per-label defer decisions can satisfy
-            local losses while yielding an incoherent global action vector.
+            Learning to defer in a taxonomy is not just a collection of independent label
+            decisions. The handoff should also make clear which findings are predicted, which
+            are ruled out, and which are left for the clinician.
           </p>
 
           <div class="hero-actions" aria-label="Project links">
-            <a class="button primary" href="#results">View results</a>
-            <a class="button secondary" href="#methods">See method</a>
             <a
-              class="button secondary"
+              class="button primary"
               href="https://anonymous.4open.science/r/chml2d/"
               target="_blank"
               rel="noopener noreferrer"
             >
               Anonymous code
             </a>
+            <a class="button primary" href="#challenge">Start with the example</a>
+            <a class="button secondary" href="#methods">How it works</a>
           </div>
 
-          <div class="hero-contributions" aria-label="Paper contributions">
-            <p class="claim-heading">Paper contributions</p>
+          <div class="hero-contributions" aria-label="Page guide">
+            <p class="claim-heading">What this page explains</p>
             <dl class="hero-claims">
               <div>
                 <span class="claim-number">01</span>
-                <dt>Problem formulation</dt>
-                <dd>Hierarchical multi-label L2D as a structured clinical handoff.</dd>
+                <dt>The setting</dt>
+                <dd>Why multi-label medical taxonomies change the meaning of deferral.</dd>
               </div>
               <div>
                 <span class="claim-number">02</span>
-                <dt>Deferral incoherence</dt>
-                <dd>Taxonomic, delegation, and deductive failures in the action space.</dd>
+                <dt>The failure modes</dt>
+                <dd>Taxonomic, delegation, and deductive inconsistencies in a handoff.</dd>
               </div>
               <div>
                 <span class="claim-number">03</span>
-                <dt>Coherent Bayes rule</dt>
-                <dd>The optimal action is a joint taxonomy decision, not nodewise thresholding.</dd>
+                <dt>The decision rule</dt>
+                <dd>Why the coherent Bayes action is a joint taxonomy decision.</dd>
               </div>
               <div>
                 <span class="claim-number">04</span>
-                <dt>Deployable remedies</dt>
-                <dd>Exact projection plus fast TBP+RPO across four imaging benchmarks.</dd>
+                <dt>The algorithms</dt>
+                <dd>Projection and TBP+RPO as two ways to enforce the handoff contract.</dd>
               </div>
             </dl>
           </div>
@@ -89,11 +92,11 @@
         <div class="container proof-grid">
           <article>
             <span class="stat-value">4</span>
-            <span class="stat-label">medical-imaging benchmarks</span>
+            <span class="stat-label">benchmarks used for evaluation</span>
           </article>
           <article>
             <span class="stat-value">0</span>
-            <span class="stat-label">incoherence with exact projection</span>
+            <span class="stat-label">incoherence after exact projection</span>
           </article>
           <article>
             <span class="stat-value">near 0</span>
@@ -101,7 +104,7 @@
           </article>
           <article>
             <span class="stat-value">35</span>
-            <span class="stat-label">pooled real-reader runs across VinDr-CXR and CheXpert</span>
+            <span class="stat-label">pooled real-reader runs in the CXR experiments</span>
           </article>
         </div>
       </section>
@@ -236,53 +239,27 @@
             </p>
             <div class="bayes-formula" aria-label="Bayes optimal coherent deferral equation">
               <span>Coherent Bayes action</span>
-              <math class="equation" display="block">
-                <semantics>
-                  <mrow>
-                    <msubsup>
-                      <mi>a</mi>
-                      <mtext>SE</mtext>
-                      <mi>B</mi>
-                    </msubsup>
-                    <mo>(</mo>
-                    <mi>x</mi>
-                    <mo>)</mo>
-                    <mo>&isin;</mo>
-                    <munder>
-                      <mo>argmin</mo>
-                      <mrow>
-                        <mi>a</mi>
-                        <mo>&isin;</mo>
-                        <msub>
-                          <mi mathvariant="script">C</mi>
-                          <mtext>SE</mtext>
-                        </msub>
-                      </mrow>
-                    </munder>
-                    <msub>
-                      <mo>&sum;</mo>
-                      <mrow>
-                        <mi>v</mi>
-                        <mo>&isin;</mo>
-                        <mi mathvariant="script">V</mi>
-                      </mrow>
-                    </msub>
-                    <msub>
-                      <mi>&rho;</mi>
-                      <mi>v</mi>
-                    </msub>
-                    <mo>(</mo>
-                    <msub>
-                      <mi>a</mi>
-                      <mi>v</mi>
-                    </msub>
-                    <mo>|</mo>
-                    <mi>x</mi>
-                    <mo>)</mo>
-                  </mrow>
-                  <annotation encoding="application/x-tex">a_{\mathrm{SE}}^B(x) \in \arg\min_{a \in \mathcal{C}_{\mathrm{SE}}} \sum_{v \in \mathcal{V}} \rho_v(a_v \mid x)</annotation>
-                </semantics>
-              </math>
+              <div class="latex-equation" role="img" aria-label="a SE B of x is in arg min over coherent actions of the sum of local risks">
+                <span class="math-term">
+                  <span class="math-var">a</span><sub>SE</sub><sup>B</sup>(x)
+                </span>
+                <span class="math-symbol">&isin;</span>
+                <span class="math-op">
+                  <span class="math-op-main">arg min</span>
+                  <span class="math-op-under">
+                    a &isin; <span class="math-cal">C</span><sub>SE</sub>
+                  </span>
+                </span>
+                <span class="math-op math-sum">
+                  <span class="math-op-main">&sum;</span>
+                  <span class="math-op-under">
+                    v &isin; <span class="math-cal">V</span>
+                  </span>
+                </span>
+                <span class="math-term">
+                  &rho;<sub>v</sub>(a<sub>v</sub> &mid; x)
+                </span>
+              </div>
               <div class="math-plain">
                 <p><strong>In words:</strong> choose the lowest-risk handoff that is allowed by the taxonomy.</p>
                 <ul>
@@ -342,7 +319,7 @@
             <div class="bayes-panel coherent-bayes">
               <div class="bayes-panel-header">
                 <span class="panel-step">Coherent Bayes</span>
-                <h3>Choose the best feasible joint handoff</h3>
+                <h3>Compare feasible joint handoffs</h3>
               </div>
 
               <div class="bayes-tree-comparison" aria-hidden="true">
@@ -357,13 +334,13 @@
                 </div>
 
                 <div class="bayes-mini-taxonomy selected">
-                  <p>Best coherent handoff</p>
+                  <p>A coherent alternative</p>
                   <div class="bayes-tree-node parent defer-node">Lung opacity <span>defer</span></div>
                   <div class="bayes-tree-children">
                     <div class="bayes-tree-node absent-node">Edema <span>absent</span></div>
                     <div class="bayes-tree-node defer-node">Consolidation <span>defer</span></div>
                   </div>
-                  <strong>Lowest-risk feasible action</strong>
+                  <strong>Feasible under the taxonomy</strong>
                 </div>
               </div>
 
@@ -374,14 +351,14 @@
                   <p>Lowest local combination, but not in C_SE.</p>
                 </article>
                 <article class="candidate selected">
-                  <span class="candidate-status">Selected</span>
+                  <span class="candidate-status">Feasible</span>
                   <strong>defer parent + defer child</strong>
-                  <p>Best coherent action after enforcing the handoff contract.</p>
+                  <p>A coherent handoff after enforcing the taxonomy constraint.</p>
                 </article>
                 <article class="candidate">
                   <span class="candidate-status">Feasible</span>
                   <strong>present parent + present child</strong>
-                  <p>Coherent, but higher total risk in this example.</p>
+                  <p>Also coherent, with a different total-risk tradeoff.</p>
                 </article>
               </div>
             </div>
@@ -393,7 +370,7 @@
         <div class="container">
           <div class="section-heading">
             <p class="eyebrow">Methods</p>
-            <h2>Two contract-aware estimators.</h2>
+            <h2>Two ways to impose the handoff contract.</h2>
             <p>
               We use exact coherent projection for trained BR-L2D models and TBP+RPO for
               learned structured inference.
@@ -404,7 +381,7 @@
             <article class="method-card">
               <div class="method-header">
                 <span class="method-kicker">Exact retrofit</span>
-                <span class="method-badge">zero incoherence</span>
+                <span class="method-badge">decoder</span>
               </div>
               <h3>BR + Projection</h3>
               <p>
@@ -414,14 +391,14 @@
               <ul class="check-list">
                 <li>Inference-only repair for existing local L2D models</li>
                 <li>Exact MAP over the Selective-Exclusion coherent action set</li>
-                <li>Use when deterministic contract compliance is required</li>
+                <li>Useful when every displayed handoff must satisfy the contract</li>
               </ul>
             </article>
 
             <article class="method-card emphasis">
               <div class="method-header">
-                <span class="method-kicker">Fast learned policy</span>
-                <span class="method-badge">high throughput</span>
+                <span class="method-kicker">Learned structured policy</span>
+                <span class="method-badge">recursive</span>
               </div>
               <h3>TBP + RPO</h3>
               <p>
@@ -432,7 +409,7 @@
               <ul class="check-list">
                 <li>TBP joint model has coherent support under SE</li>
                 <li>Ancestor decisions learn downstream costs during Stage II training</li>
-                <li>Fast marginal decoder for repeated inference</li>
+                <li>Marginal decoder for repeated inference</li>
               </ul>
             </article>
           </div>
@@ -543,11 +520,11 @@
         <div class="container">
           <div class="section-heading">
             <p class="eyebrow">Results</p>
-            <h2>Independent L2D is systematically incoherent. Structured methods fix the handoff.</h2>
+            <h2>What changes when coherence is enforced?</h2>
             <p>
-              Across real-reader CXR evidence and controlled-expert stress tests, the dominant
-              failures are not ordinary hierarchy violations. They are delegation and deductive
-              handoff errors.
+              The experiments compare independent nodewise L2D with two coherent alternatives.
+              The main quantity to track is whether the final handoff remains interpretable under
+              the taxonomy.
             </p>
           </div>
 
@@ -555,37 +532,51 @@
             <article>
               <span class="summary-label">VinDr-CXR</span>
               <strong>.107 -> .004</strong>
-              <span>Any incoherence: BR-L2D to BR+RPO</span>
+              <span>Any incoherence: BR-L2D compared with BR+RPO</span>
             </article>
             <article>
               <span class="summary-label">CheXpert</span>
               <strong>.050 -> ~0</strong>
-              <span>Any incoherence with utility gains</span>
+              <span>Any incoherence under the learned coherent policy</span>
             </article>
             <article>
               <span class="summary-label">PadChest</span>
               <strong>.124 -> ~0</strong>
-              <span>Largest taxonomy stress test</span>
+              <span>Largest taxonomy in the benchmark set</span>
             </article>
             <article>
               <span class="summary-label">Projection</span>
               <strong>=0</strong>
-              <span>Exact incoherence on every benchmark</span>
+              <span>Exact projection returns coherent action vectors</span>
             </article>
           </div>
 
-          <p class="table-caption" id="results-table-caption">
-            Budget-swept primary results. Higher is better for BalAcc, F1-I, and F1-L;
-            lower is better for Any incoh.
-          </p>
-          <div
-            class="table-wrap"
-            role="region"
-            aria-label="Primary results table"
-            aria-describedby="results-table-caption"
-            tabindex="0"
-          >
-            <table>
+          <div class="results-table-panel">
+            <div class="table-panel-heading">
+              <div>
+                <p class="table-kicker">Budget sweep</p>
+                <h3>Benchmark outcomes</h3>
+              </div>
+              <p class="table-caption" id="results-table-caption">
+                Higher is better for BalAcc, F1-I, and F1-L. Lower is better for incoherence.
+              </p>
+            </div>
+            <div
+              class="table-wrap"
+              role="region"
+              aria-label="Primary results table"
+              aria-describedby="results-table-caption"
+              tabindex="0"
+            >
+            <table class="results-table">
+              <colgroup>
+                <col class="dataset-col">
+                <col class="method-col">
+                <col>
+                <col>
+                <col>
+                <col class="incoherence-col">
+              </colgroup>
               <thead>
                 <tr>
                   <th scope="col">Dataset</th>
@@ -718,13 +709,14 @@
                 </tr>
               </tbody>
             </table>
+            </div>
           </div>
 
           <div class="figure-grid">
             <figure>
               <img
                 src="sys.png"
-                alt="Representative VinDr-CXR deferral curve showing system F1 improving with deferral and BR-RPO remaining strongest through much of the sweep."
+                alt="Representative VinDr-CXR deferral curve showing system F1 across deferral budgets."
               >
               <figcaption>
                 System F1 across node-level deferral budgets on a representative VinDr-CXR
@@ -735,11 +727,11 @@
             <figure>
               <img
                 src="incoh.png"
-                alt="Representative VinDr-CXR incoherence curve showing BR and BR-Continue rise at intermediate deferral budgets while projection remains at zero and BR-RPO stays near zero."
+                alt="Representative VinDr-CXR incoherence curve over deferral budgets for BR, BR-Continue, BR-Projection, and BR-RPO."
               >
               <figcaption>
-                Any incoherence over the same budget sweep. Projection stays at zero; BR+RPO
-                remains near zero.
+                Any incoherence over the same budget sweep, showing how the decoded action vector
+                changes after coherence constraints are applied.
               </figcaption>
             </figure>
 
@@ -749,8 +741,7 @@
                 alt="CheXpert multiple-expert results showing human plus AI expert combinations and deferral curve comparisons."
               >
               <figcaption>
-                Multi-expert CheXpert evidence: action-space coherence remains relevant when
-                deferral can route to several experts.
+                CheXpert multi-expert setting, where deferral can route to several reader models.
               </figcaption>
             </figure>
           </div>
@@ -760,14 +751,14 @@
       <section class="section-band muted" id="takeaways">
         <div class="container">
           <div class="section-heading">
-            <p class="eyebrow">Takeaways</p>
-            <h2>What the paper establishes.</h2>
+            <p class="eyebrow">Summary</p>
+            <h2>What to remember.</h2>
           </div>
 
           <div class="takeaway-grid">
             <article>
               <span class="takeaway-number">01</span>
-              <h3>The failure is semantic.</h3>
+              <h3>The issue is semantic.</h3>
               <p>
                 A handoff can be label-satisfiable and still clinically confusing because the
                 model has delegated a decision it already resolved elsewhere in the taxonomy.
@@ -775,7 +766,7 @@
             </article>
             <article>
               <span class="takeaway-number">02</span>
-              <h3>The theory changes the Bayes rule.</h3>
+              <h3>Coherence changes the Bayes rule.</h3>
               <p>
                 Coherent deferral is a structured optimisation over the taxonomy; independent
                 nodewise Bayes L2D can still produce delegation violations and deductive defects.
@@ -783,10 +774,10 @@
             </article>
             <article>
               <span class="takeaway-number">03</span>
-              <h3>The deployment variants are explicit.</h3>
+              <h3>The method choice is explicit.</h3>
               <p>
                 Projection is deterministic and exactly coherent at inference. TBP+RPO is the
-                fast marginal policy evaluated in the main experiments.
+                learned marginal policy evaluated in the main experiments.
               </p>
             </article>
           </div>
@@ -820,7 +811,7 @@
     <footer class="site-footer">
       <div class="container">
         <p>
-          Anonymous project page.
+          Anonymous project page for double-blind review.
         </p>
       </div>
     </footer>
