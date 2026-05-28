@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 270 270" role="img" aria-label="Chest X-ray">
+  <defs>
+    <linearGradient id="film" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#7f8587"/>
+      <stop offset="0.45" stop-color="#5d6467"/>
+      <stop offset="1" stop-color="#383f42"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.42" r="0.64">
+      <stop offset="0" stop-color="#e9ecec" stop-opacity="0.88"/>
+      <stop offset="0.42" stop-color="#bec4c5" stop-opacity="0.56"/>
+      <stop offset="1" stop-color="#2b3033" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="2.2"/>
+    </filter>
+    <filter id="bone" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="0.75"/>
+    </filter>
+  </defs>
+
+  <rect x="2" y="2" width="266" height="266" rx="2" fill="#23272a"/>
+  <rect x="6" y="6" width="258" height="258" rx="1" fill="url(#film)"/>
+  <rect x="12" y="12" width="246" height="246" rx="1" fill="#1f2427" opacity="0.18"/>
+  <ellipse cx="135" cy="128" rx="102" ry="120" fill="url(#glow)" filter="url(#soft)"/>
+
+  <path d="M80 42 C55 56 42 88 42 128 C42 181 64 226 98 245 C86 202 83 151 89 103 C92 77 99 57 112 43 Z"
+        fill="#1b2023" opacity="0.42" filter="url(#soft)"/>
+  <path d="M190 42 C215 56 228 88 228 128 C228 181 206 226 172 245 C184 202 187 151 181 103 C178 77 171 57 158 43 Z"
+        fill="#1b2023" opacity="0.42" filter="url(#soft)"/>
+
+  <path d="M123 32 C116 76 116 123 122 170 C126 202 124 230 113 251"
+        fill="none" stroke="#e4e7e8" stroke-width="11" stroke-linecap="round" opacity="0.36" filter="url(#bone)"/>
+  <path d="M145 32 C154 82 153 128 146 174 C142 204 145 232 157 251"
+        fill="none" stroke="#e4e7e8" stroke-width="9" stroke-linecap="round" opacity="0.27" filter="url(#bone)"/>
+  <path d="M135 38 L135 250" stroke="#30373a" stroke-width="5" opacity="0.42"/>
+
+  <g fill="none" stroke="#e5e8e8" stroke-width="4.4" stroke-linecap="round" opacity="0.34" filter="url(#bone)">
+    <path d="M132 57 C98 60 71 75 48 103"/>
+    <path d="M138 57 C172 60 199 75 222 103"/>
+    <path d="M126 84 C92 88 66 105 43 137"/>
+    <path d="M144 84 C178 88 204 105 227 137"/>
+    <path d="M124 112 C90 119 66 139 47 170"/>
+    <path d="M146 112 C180 119 204 139 223 170"/>
+    <path d="M124 141 C94 150 72 170 57 200"/>
+    <path d="M146 141 C176 150 198 170 213 200"/>
+    <path d="M127 169 C101 181 83 202 73 228"/>
+    <path d="M143 169 C169 181 187 202 197 228"/>
+  </g>
+
+  <g fill="none" stroke="#dfe3e4" stroke-width="6" stroke-linecap="round" opacity="0.35" filter="url(#bone)">
+    <path d="M45 48 C73 42 102 50 127 72"/>
+    <path d="M225 48 C197 42 168 50 143 72"/>
+    <path d="M8 78 C42 62 67 59 92 69"/>
+    <path d="M262 78 C228 62 203 59 178 69"/>
+  </g>
+
+  <path d="M83 108 C72 137 74 174 86 205 C95 225 110 236 128 235"
+        fill="none" stroke="#0f1418" stroke-width="13" stroke-linecap="round" opacity="0.28" filter="url(#soft)"/>
+  <path d="M187 108 C198 137 196 174 184 205 C175 225 160 236 142 235"
+        fill="none" stroke="#0f1418" stroke-width="13" stroke-linecap="round" opacity="0.28" filter="url(#soft)"/>
+
+  <path d="M64 230 C97 240 174 240 206 230 C194 252 77 252 64 230 Z"
+        fill="#e9ecec" opacity="0.24" filter="url(#soft)"/>
+  <text x="185" y="28" fill="#eef2f2" font-family="Arial, sans-serif" font-size="13" font-weight="700" opacity="0.82">L</text>
+</svg>

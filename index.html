@@ -23,6 +23,7 @@
           <span aria-hidden="true"></span>
         </button>
         <div class="nav-links" id="nav-links">
+          <a href="#setup">Setup</a>
           <a href="#challenge">Challenge</a>
           <a href="#bayes">Bayes Rule</a>
           <a href="#methods">Methods</a>
@@ -65,12 +66,12 @@
             <dl class="hero-claims">
               <div>
                 <span class="claim-number">01</span>
-                <dt>The setting</dt>
-                <dd>Why multi-label medical taxonomies change the meaning of deferral.</dd>
+                <dt>The L2D setup</dt>
+                <dd>How a classifier, rejector, and clinician share decisions on one image.</dd>
               </div>
               <div>
                 <span class="claim-number">02</span>
-                <dt>The failure modes</dt>
+                <dt>The taxonomy issue</dt>
                 <dd>Taxonomic, delegation, and deductive inconsistencies in a handoff.</dd>
               </div>
               <div>
@@ -109,15 +110,137 @@
         </div>
       </section>
 
+      <section class="section-band setup-band" id="setup">
+        <div class="container">
+          <div class="section-heading">
+            <p class="eyebrow">Setup</p>
+            <h2>What learning to defer means in a multi-label CXR task.</h2>
+            <p>
+              A learning-to-defer system has a classifier, a rejector, and a human expert.
+              For each image, it learns when the model should answer and when the decision
+              should be handed to the clinician. In chest X-ray reporting, that decision is not
+              made once: it is repeated across many co-occurring findings.
+            </p>
+          </div>
+
+          <div class="setup-grid">
+            <div class="workflow-panel" aria-label="Learning to defer workflow">
+              <div class="clinical-case-card">
+                <span class="workflow-kicker">Input image</span>
+                <div class="cxr-frame">
+                  <img src="cxr_case.svg" alt="Stylised chest X-ray used as a visual placeholder.">
+                  <span class="cxr-dot"></span>
+                </div>
+                <p>One CXR can raise several related questions.</p>
+              </div>
+
+              <div class="workflow-arrow" aria-hidden="true"></div>
+
+              <div class="classifier-card">
+                <span class="workflow-kicker">Shared AI classifier</span>
+                <strong>g(x)</strong>
+                <div class="logit-row">
+                  <span>g<sub>1</sub></span>
+                  <span>g<sub>2</sub></span>
+                  <span>...</span>
+                  <span>g<sub>L</sub></span>
+                </div>
+                <p>One model produces local evidence for all labels.</p>
+              </div>
+
+              <div class="workflow-arrow" aria-hidden="true"></div>
+
+              <div class="label-bank" aria-label="Independent label decisions under binary relevance">
+                <span class="workflow-kicker">Binary relevance L2D</span>
+                <div class="label-chip">
+                  <strong>Lung opacity</strong>
+                  <span>y<sub>1</sub>, m<sub>1</sub>, g<sub>1</sub>(x)</span>
+                  <em class="action-chip defer-node">defer</em>
+                </div>
+                <div class="label-chip">
+                  <strong>Consolidation</strong>
+                  <span>y<sub>2</sub>, m<sub>2</sub>, g<sub>2</sub>(x)</span>
+                  <em class="action-chip present-node">present</em>
+                </div>
+                <div class="label-chip">
+                  <strong>Pleural effusion</strong>
+                  <span>y<sub>3</sub>, m<sub>3</sub>, g<sub>3</sub>(x)</span>
+                  <em class="action-chip absent-node">absent</em>
+                </div>
+                <div class="label-chip muted-chip">
+                  <strong>...</strong>
+                  <span>repeat independently up to label L</span>
+                </div>
+              </div>
+            </div>
+
+            <aside class="br-loss-card" aria-label="Binary relevance learning objective">
+              <div class="baseline-head">
+                <span class="workflow-kicker">Binary relevance baseline</span>
+                <h3>Train one L2D loss per label, then add them up.</h3>
+                <p>
+                  This is the binary-relevance extension: treat each pathology as its own
+                  defer-or-predict problem. It is a sensible starting point and can perform well,
+                  but it has not yet checked whether the final handoff is coherent as a taxonomy.
+                </p>
+              </div>
+
+              <div class="baseline-visual" aria-label="Binary relevance computes independent per-label losses before aggregation">
+                <div class="loss-list">
+                  <article class="loss-item">
+                    <span>label 1</span>
+                    <strong>Lung opacity</strong>
+                    <code>&ell;<sub>1</sub> = &ell;(g<sub>1</sub>(x), y<sub>1</sub>, m<sub>1</sub>)</code>
+                  </article>
+                  <article class="loss-item">
+                    <span>label 2</span>
+                    <strong>Consolidation</strong>
+                    <code>&ell;<sub>2</sub> = &ell;(g<sub>2</sub>(x), y<sub>2</sub>, m<sub>2</sub>)</code>
+                  </article>
+                  <article class="loss-item">
+                    <span>label 3</span>
+                    <strong>Pleural effusion</strong>
+                    <code>&ell;<sub>3</sub> = &ell;(g<sub>3</sub>(x), y<sub>3</sub>, m<sub>3</sub>)</code>
+                  </article>
+                  <article class="loss-item muted-loss">
+                    <span>...</span>
+                    <strong>Remaining labels</strong>
+                    <code>&ell;<sub>L</sub> = &ell;(g<sub>L</sub>(x), y<sub>L</sub>, m<sub>L</sub>)</code>
+                  </article>
+                </div>
+
+                <div class="aggregate-card">
+                  <span>Aggregate objective</span>
+                  <div class="clean-equation">
+                    J<sub>BR</sub>(x, y, m) =
+                    &ell;<sub>1</sub> + &ell;<sub>2</sub> + ... + &ell;<sub>L</sub>
+                  </div>
+                  <p>Each term is optimized as if its label were a separate L2D task.</p>
+                </div>
+              </div>
+
+              <div class="loss-note">
+                <div class="workflow-notes">
+                  <span>Independent losses</span>
+                  <span>Shared image</span>
+                  <span>Taxonomy checked later</span>
+                </div>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </section>
+
       <section class="section-band" id="challenge">
         <div class="container">
           <div class="section-heading">
             <p class="eyebrow">Challenge</p>
             <h2>Flat deferral is the wrong abstraction for a taxonomy.</h2>
             <p>
-              Standard hierarchy-aware classification constrains binary labels. Hierarchical
-              L2D must also constrain ternary actions: absent, present, and defer. Otherwise
-              the system can send a clinical reader a delegation that contradicts itself.
+              Binary relevance gives a plausible flat action for every finding. The problem is
+              visible only after those actions are placed back onto the medical taxonomy.
+              Hierarchical L2D must constrain ternary actions: absent, present, and defer.
+              Otherwise the system can send a clinical reader a delegation that contradicts itself.
             </p>
           </div>
 
@@ -239,26 +362,22 @@
             </p>
             <div class="bayes-formula" aria-label="Bayes optimal coherent deferral equation">
               <span>Coherent Bayes action</span>
-              <div class="latex-equation" role="img" aria-label="a SE B of x is in arg min over coherent actions of the sum of local risks">
-                <span class="math-term">
-                  <span class="math-var">a</span><sub>SE</sub><sup>B</sup>(x)
-                </span>
-                <span class="math-symbol">&isin;</span>
-                <span class="math-op">
-                  <span class="math-op-main">arg min</span>
-                  <span class="math-op-under">
-                    a &isin; <span class="math-cal">C</span><sub>SE</sub>
+              <div class="bayes-equation-card" role="img" aria-label="The coherent Bayes action minimizes total risk over coherent actions">
+                <div class="formula-line">
+                  <span class="math-token"><span class="math-var">a</span><sub>SE</sub><sup>B</sup>(x)</span>
+                  <span class="math-relation">&isin;</span>
+                  <span class="math-argmin">
+                    <span>arg min</span>
+                    <small>a &isin; C<sub>SE</sub></small>
                   </span>
-                </span>
-                <span class="math-op math-sum">
-                  <span class="math-op-main">&sum;</span>
-                  <span class="math-op-under">
-                    v &isin; <span class="math-cal">V</span>
-                  </span>
-                </span>
-                <span class="math-term">
-                  &rho;<sub>v</sub>(a<sub>v</sub> &mid; x)
-                </span>
+                  <span class="math-token">R(a | x)</span>
+                </div>
+                <div class="formula-line">
+                  <span class="math-token">R(a | x)</span>
+                  <span class="math-relation">=</span>
+                  <span class="math-token math-sigma">&Sigma;<sub>v &isin; V</sub></span>
+                  <span class="math-token">&rho;<sub>v</sub>(a<sub>v</sub> | x)</span>
+                </div>
               </div>
               <div class="math-plain">
                 <p><strong>In words:</strong> choose the lowest-risk handoff that is allowed by the taxonomy.</p>
@@ -344,6 +463,34 @@
                 </div>
               </div>
 
+              <div class="bayes-neighborhood">
+                <div>
+                  <span class="bayes-neighborhood-label">Why the neighbourhood matters</span>
+                  <p>
+                    Choosing the parent action changes which child actions are even available.
+                    The Bayes rule therefore compares a local risk plus the best feasible
+                    downstream subtree.
+                  </p>
+                </div>
+                <div class="subtree-options" aria-label="Parent action options and downstream feasible child decisions">
+                  <article class="subtree-option">
+                    <strong class="absent-node">parent absent</strong>
+                    <span>children forced absent</span>
+                    <b>total risk .42</b>
+                  </article>
+                  <article class="subtree-option selected">
+                    <strong class="defer-node">parent defer</strong>
+                    <span>children absent or defer</span>
+                    <b>total risk .29</b>
+                  </article>
+                  <article class="subtree-option">
+                    <strong class="present-node">parent present</strong>
+                    <span>children free to answer</span>
+                    <b>total risk .36</b>
+                  </article>
+                </div>
+              </div>
+
               <div class="candidate-list">
                 <article class="candidate rejected">
                   <span class="candidate-status">Forbidden</span>
@@ -412,6 +559,46 @@
                 <li>Marginal decoder for repeated inference</li>
               </ul>
             </article>
+          </div>
+
+          <div class="projection-showcase" aria-labelledby="projection-showcase-title">
+            <div class="projection-copy">
+              <p class="showcase-kicker">Method detail</p>
+              <h3 id="projection-showcase-title">Projection repairs a flat handoff without retraining the model.</h3>
+              <p>
+                The binary-relevance model proposes local scores for absent, present, and defer.
+                Projection searches over coherent action vectors and returns the highest-scoring
+                one. The paper computes the exact solution with a tree dynamic program rather
+                than enumerating every possible assignment.
+              </p>
+            </div>
+            <div class="projection-visual" aria-label="Coherent projection visual">
+              <div class="projection-stage">
+                <span class="visual-label">Local BR output</span>
+                <div class="projection-tree incoherent">
+                  <div class="projection-node defer-node">Lung opacity <span>.81 defer</span></div>
+                  <div class="projection-children">
+                    <div class="projection-node absent-node">Edema <span>.74 absent</span></div>
+                    <div class="projection-node present-node">Consolidation <span>.88 present</span></div>
+                    <div class="projection-node defer-node">Infiltration <span>.67 defer</span></div>
+                  </div>
+                </div>
+                <p>High local score, but the parent-child handoff is not coherent.</p>
+              </div>
+              <div class="projection-arrow" aria-hidden="true">DP</div>
+              <div class="projection-stage">
+                <span class="visual-label">Projected output</span>
+                <div class="projection-tree coherent">
+                  <div class="projection-node defer-node">Lung opacity <span>.81 defer</span></div>
+                  <div class="projection-children">
+                    <div class="projection-node absent-node">Edema <span>.74 absent</span></div>
+                    <div class="projection-node defer-node">Consolidation <span>.72 defer</span></div>
+                    <div class="projection-node defer-node">Infiltration <span>.67 defer</span></div>
+                  </div>
+                </div>
+                <p>The closest high-scoring coherent handoff is shown to the reader.</p>
+              </div>
+            </div>
           </div>
 
           <div class="tbp-showcase" aria-labelledby="tbp-showcase-title">
@@ -513,6 +700,25 @@
               </div>
             </div>
           </div>
+
+          <div class="method-tradeoffs" aria-label="Comparison of projection and TBP plus RPO">
+            <div>
+              <p class="table-kicker">Method tradeoffs</p>
+              <h3>Two fixes for two deployment needs.</h3>
+            </div>
+            <div class="tradeoff-grid">
+              <article>
+                <span>Projection</span>
+                <strong>Safe retrofit</strong>
+                <p>No retraining. Exact coherent decoding at inference time for an existing local L2D model.</p>
+              </article>
+              <article>
+                <span>TBP + RPO</span>
+                <strong>Learned structured policy</strong>
+                <p>Fine-tunes through the taxonomy so ancestor decisions learn the downstream cost of their choices.</p>
+              </article>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -526,6 +732,24 @@
               The main quantity to track is whether the final handoff remains interpretable under
               the taxonomy.
             </p>
+          </div>
+
+          <div class="curve-guide" aria-label="How to read the deferral curves">
+            <article>
+              <span>01</span>
+              <strong>Move along the x-axis</strong>
+              <p>Increasing the budget means more node-level decisions are deferred to the reader.</p>
+            </article>
+            <article>
+              <span>02</span>
+              <strong>Track utility and coherence together</strong>
+              <p>Raw performance can improve while the displayed handoff becomes harder to interpret.</p>
+            </article>
+            <article>
+              <span>03</span>
+              <strong>Look for complementarity</strong>
+              <p>The useful operating point combines model answers with selective reader input.</p>
+            </article>
           </div>
 
           <div class="result-summary">
@@ -752,7 +976,7 @@
         <div class="container">
           <div class="section-heading">
             <p class="eyebrow">Summary</p>
-            <h2>What to remember.</h2>
+            <h2>Main implications.</h2>
           </div>
 
           <div class="takeaway-grid">
